@@ -15,7 +15,7 @@ public class Issue {
     @Id
     @Column(name = "issue_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID issueID;
+    private UUID issueId;
 
     @Column(nullable = false)
     private String  title;
@@ -28,6 +28,9 @@ public class Issue {
 
     @Column(nullable = false)
     private int priority;
+
+    @Column(nullable = false)
+    private int severity;
 
     //Subject to change
     @Column(nullable = false)
