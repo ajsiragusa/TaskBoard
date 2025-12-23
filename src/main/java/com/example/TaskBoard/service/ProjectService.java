@@ -2,6 +2,7 @@ package com.example.TaskBoard.service;
 
 import com.example.TaskBoard.entity.Project;
 import com.example.TaskBoard.repository.ProjectRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,13 +10,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
-
-    public ProjectService(ProjectRepository projectRepository) {
-        this.projectRepository = projectRepository;
-    }
 
     // GET /projects - List all projects
     public List<Project> getAllProjects() {
