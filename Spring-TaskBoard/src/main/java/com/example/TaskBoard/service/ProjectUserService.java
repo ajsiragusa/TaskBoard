@@ -26,34 +26,32 @@ public class ProjectUserService {
         return proUserRepo.findAll();
     }
 
-    public List<Project> getAllUserProjects(UUID userID){
-        Optional<List<ProjectUser>> projectList = proUserRepo.findProjectUserByUserID(userID);
+    public List<Project> getAllUserProjects(User user){
+        List<ProjectUser> projectList = proUserRepo.findProjectUserByUser(user);
         ArrayList<Project> userProjects = new ArrayList<>();
 
-        projectList.ifPresent(projectUsers -> projectUsers.forEach(
-                projectUser -> {
-                    proRepo.findById(projectUser.getProjectID()).ifPresent(userProjects::add);
-                }));
+        projectList.forEach(projectUser -> {
+            proRepo.findById(projectUser.getProject().getProjectId()).ifPresent(userProjects::add);
+        });
 
         return userProjects;
     }
 
-    public List<User> getAllProjectAssignedUsers(UUID projectID){
-        Optional<List<ProjectUser>> userList = proUserRepo.findProjectUserByProjectID(projectID);
+    public List<User> getAllProjectAssignedUsers(Project project){
+        List<ProjectUser> userList = proUserRepo.findProjectUserByProject(project);
         ArrayList<User> projectAssignees = new ArrayList<>();
 
-        userList.ifPresent(projectUsers -> { projectUsers.forEach(
-                projectUser -> {
-                    userRepo.findById(projectUser.getUserID()).ifPresent(projectAssignees::add);
-                }
-        );});
+        userList.forEach(projectUser -> {
+            userRepo.findById(projectUser.getUser().getUserID()).ifPresent(projectAssignees::add);
+        });
 
         return projectAssignees;
     }
 
-    public ProjectUser assignUserToProject(User user, Project project) throws SQLException {
+    public ProjectUser assignUserToProject(ProjectUser newAssignedPair) throws SQLException {
 
-        ProjectUser newAssignedPair = new ProjectUser(user.getUserID(), project.getProjectId());
+        User user = newAssignedPair.getUser();
+        Project project = newAssignedPair.getProject();
 
         if(userRepo.findById(user.getUserID()).isEmpty()){
             throw new SQLException("User with userID " + user.getUserID() + " does not exist!");
@@ -62,9 +60,9 @@ public class ProjectUserService {
         if(proRepo.findById((project.getProjectId())).isEmpty()){
             throw new SQLException(("Project with projectID " + project.getProjectId() + " does not exist!"));
         }
-
-        if(proUserRepo.findById(newAssignedPair).isPresent()){
-            throw new SQLException("User is already assigned to the project!");
+        Optional<ProjectUser> temp = proUserRepo.findProjectUserByUserAndProject(newAssignedPair.getUser(), newAssignedPair.getProject());
+        if(temp.isPresent()){
+            throw new SQLException("User is already assigned to the project!\n" + temp.get());
         }
 
         return proUserRepo.save(newAssignedPair);

@@ -15,11 +15,23 @@ import java.util.UUID;
 public class ProjectUser {
 
 
-    @ManyToMany
-    @JoinColumn(name = "FK_user_id", referencedColumnName = "user_id")
-    private UUID userID;
+    @Id
+    @Column(name = "project_user_id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID projectUserID;
 
-    @ManyToMany
+    @ManyToOne
+    @JoinColumn(name = "FK_user_id", referencedColumnName = "user_id")
+    private User user;
+
+
+    @ManyToOne
     @JoinColumn(name = "FK_project_id", referencedColumnName = "project_id")
-    private UUID projectID;
+    private Project project;
+
+    public ProjectUser(User user, Project project){
+        this.user = user;
+        this.project = project;
+    }
+
 }
