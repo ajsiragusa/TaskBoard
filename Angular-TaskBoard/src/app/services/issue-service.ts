@@ -74,7 +74,7 @@ export class IssueService {
       "priority": issuePriority,
       "severity": issueSeverity
   }
-    this.httpClient.post(`http://localhost:8080/issues/${issueId}`, body)
+    this.httpClient.put(`http://localhost:8080/issues/${issueId}`, body)
     .subscribe({
       next: responseData => {
         console.log(responseData);
