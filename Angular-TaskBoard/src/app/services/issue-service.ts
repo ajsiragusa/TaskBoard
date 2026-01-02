@@ -79,8 +79,10 @@ export class IssueService {
       "status": issueStatus.replace(/ /g, '_').toUpperCase(),
       "priority": issuePriority.toUpperCase(),
       "severity": issueSeverity.toUpperCase()
-  }
-    this.httpClient.put(`http://localhost:8080/issues/${issueId}`, body)
+    }
+    let headers = new HttpHeaders();
+    headers = headers.set('Authorization', `Bearer ${this.jwtStorage.getToken()}`);
+    this.httpClient.put(`http://localhost:8080/issues/${issueId}`, body, {headers: headers})
     .subscribe({
       next: responseData => {
         console.log(responseData);

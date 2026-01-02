@@ -51,7 +51,36 @@ public class IssueService {
     /*
         TODO: update so only certain users can update issues
     */
-    public Issue updateIssue(Issue issue) {
+    public Issue updateIssue(Issue issue, String headerData) {
+        User.UserRole userRole = authService.getAuthLevel(headerData);
+        Optional<Issue> optionalIssue = issueRepository.findById(issue.getIssueId());
+        Issue previousIssue;
+        if(optionalIssue.isPresent()) {
+            previousIssue = optionalIssue.get();
+        }
+        else {
+            return null;
+        }
+        Issue.IssueStatus prevStatus = previousIssue.getStatus();
+        Issue.IssueStatus currStatus = issue.getStatus();
+        System.out.println("prev: " + prevStatus + "\t new: " + currStatus);
+
+        // Only developers can assign issues to in progress or resolved
+        if((issue.getStatus().equals(Issue.IssueStatus.IN_PROGRESS) && !previousIssue.getStatus().equals(Issue.IssueStatus.IN_PROGRESS))||
+                (issue.getStatus().equals(Issue.IssueStatus.RESOLVED) && !previousIssue.getStatus().equals(Issue.IssueStatus.RESOLVED))){
+            if(userRole.equals(User.UserRole.DEVELOPER)){
+                return issueRepository.save(issue);
+            }
+            return null;
+        }
+        // Only testers can assign issues to open or closed
+        else if ((issue.getStatus().equals(Issue.IssueStatus.OPEN) && !previousIssue.getStatus().equals(Issue.IssueStatus.OPEN))
+                || (issue.getStatus().equals(Issue.IssueStatus.CLOSED) && !previousIssue.getStatus().equals(Issue.IssueStatus.CLOSED))){
+            if (userRole.equals(User.UserRole.TESTER)){
+                return issueRepository.save(issue);
+            }
+            return null;
+        }
         return issueRepository.save(issue);
     }
 

@@ -66,9 +66,13 @@ public class IssueController {
 
     // PUT - Update issue by ID
     @PutMapping("issues/{issueId}")
-    public ResponseEntity<Issue> updateIssueById(@PathVariable String issueId, @RequestBody Issue issue){
+    public ResponseEntity<Issue> updateIssueById(@PathVariable String issueId, @RequestBody Issue issue, @RequestHeader String authorization){
         issue.setIssueId(UUID.fromString(issueId));
-        Issue updatedIssue = issueService.updateIssue(issue);
+        Issue updatedIssue = issueService.updateIssue(issue, authorization);
+        if(updatedIssue == null)
+        {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
         return ResponseEntity.status(HttpStatus.OK).body(updatedIssue);
     }
 }
