@@ -1,9 +1,21 @@
-<h1>Login</h1>
-<p>Username</p>
-<input type="text" placeholder="Username" [(ngModel)]="email"/>
+<div class="container">
 
-<p>Password</p>
-<input type="password" placeholder="Password" [(ngModel)]="password"/>
+  <div>
+    <h1>Login</h1>
 
-<br><br>
-<button (click)="attemptLogin()">Login</button>
+    <div>
+    <h2>Email</h2>
+    <input type="text" placeholder="Email" [(ngModel)]="email"/>
+
+    <h2>Password</h2>
+    <input type="password" placeholder="Password" [(ngModel)]="password"/>
+    </div>
+
+
+    <br><br>
+    <button (click)="attemptLogin()">Login</button>
+  </div>
+
+
+</div>
+

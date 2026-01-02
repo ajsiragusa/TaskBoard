@@ -20,7 +20,8 @@ h2 {
   color: #666;
 }
 
-input{
+input,
+select {
   margin: 5px 0;
   padding: 8px;
   width: 300px;

@@ -1,9 +1,17 @@
 <nav class="navbar">
     <span class="nav-title">RevaIssue</span>
-    <a routerLink="/dashboard">Dashboard</a>
-    <a routerLink="/project">Projects</a>
-    <a routerLink="/issue">Issues</a>
-    <a routerLink="/login">Login</a>
+    @if(!token()?.token){
+      <a routerLink="/login">Login</a>
+      <a routerLink="/register">Register</a>
+    }
+    @else {
+      <a routerLink="/dashboard">Dashboard</a>
+      <a routerLink="/project">Projects</a>
+      <a routerLink="/issue">Issues</a>
+      <app-logout></app-logout>
+    }
+
 </nav>
+
 
 <router-outlet />
