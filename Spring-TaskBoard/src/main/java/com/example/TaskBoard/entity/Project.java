@@ -1,5 +1,6 @@
 package com.example.TaskBoard.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,9 +28,11 @@ public class Project {
     @JoinColumn(name = "owner_id", referencedColumnName = "email")
     private User owner;
 
+    @JsonIgnore
     @Column(name = "created_at", nullable = false, updatable = false)
     private long timeCreatedAtEpoch;
 
+    @JsonIgnore
     @Column(name = "updated_at")
     private long timeUpdatedAtEpoch;
 
