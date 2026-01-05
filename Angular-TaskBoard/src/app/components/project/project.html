@@ -96,4 +96,20 @@
             {{ successMessageUpdateProject() }}
         </div>
     </div>
+
+    <div>
+        <h2>Assign User to Project (Admin Only)</h2>
+        <p>Assign a Tester or Developer to a project.</p>
+        <input type="text" placeholder="User ID" [(ngModel)]="assignUserId">
+        <br>
+        <input type="text" placeholder="Project ID" [(ngModel)]="assignProjectId">
+        <br><br>
+        <button (click)="assignUserToProject()">Assign User</button>
+        <div *ngIf="successMessageAssign()" class="success-message">
+            {{ successMessageAssign() }}
+        </div>
+        <div *ngIf="errorMessageAssign()" class="error-message">
+            {{ errorMessageAssign() }}
+        </div>
+    </div>
 </div>

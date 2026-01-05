@@ -37,6 +37,12 @@ export class Project extends ProjectSubscriber {
 
   ownerEmailSearch: string = '';
 
+  // Assign user to project
+  assignUserId: string = '';
+  assignProjectId: string = '';
+  successMessageAssign: WritableSignal<string> = signal('');
+  errorMessageAssign: WritableSignal<string> = signal('');
+
   getProjects() {
     this.projectService.getProjects().subscribe({
       next: (responseData) => {
@@ -106,6 +112,27 @@ export class Project extends ProjectSubscriber {
         this.successMessageDeleteProject.set(`Project ${this.idValue} Deleted`);
         console.log(responseData);
       },
+    });
+  }
+
+  assignUserToProject() {
+    this.errorMessageAssign.set('');
+    this.successMessageAssign.set('');
+
+    if (this.assignUserId.trim() === '' || this.assignProjectId.trim() === '') {
+      this.errorMessageAssign.set('Both User ID and Project ID are required');
+      return;
+    }
+
+    this.projectService.assignUserToProject(this.assignUserId, this.assignProjectId).subscribe({
+      next: (responseData) => {
+        this.successMessageAssign.set(`User ${this.assignUserId} assigned to Project ${this.assignProjectId}`);
+        console.log(responseData);
+      },
+      error: (err) => {
+        this.errorMessageAssign.set('Failed to assign user to project');
+        console.error(err);
+      }
     });
   }
 }

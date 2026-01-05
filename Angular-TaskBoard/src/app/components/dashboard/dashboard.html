@@ -1,0 +1,30 @@
+<div class="container">
+    <h1>Dashboard</h1>
+
+    <div>
+        <h2>All Projects</h2>
+        <button (click)="loadProjects()">Load Projects</button>
+
+        <div *ngIf="successMessage()" class="success-message">
+            {{ successMessage() }}
+        </div>
+
+        <div *ngIf="errorMessage()" class="error-message">
+            {{ errorMessage() }}
+        </div>
+
+        <div *ngIf="projects().length > 0" class="projects-list">
+            <h3>Found ({{ projects().length }}) Projects:</h3>
+            <div *ngFor="let project of projects()" class="project-card">
+                <p><strong>ID:</strong> {{ project.projectId }}</p>
+                <p><strong>Name:</strong> {{ project.name }}</p>
+                <p><strong>Description:</strong> {{ project.description || 'No description' }}</p>
+                <p><strong>Owner:</strong> {{ project.owner.email }}</p>
+            </div>
+        </div>
+
+        <div *ngIf="projects().length === 0" class="no-data-message">
+            No projects found. Click "Load Projects" to fetch data.
+        </div>
+    </div>
+</div>

@@ -45,4 +45,16 @@ export class ProjectService {
     deleteProjectById(projectId: string) {
         return this.httpClient.delete<ProjectData>(`http://localhost:8080/projects/${projectId}`);
     }
+
+    assignUserToProject(userId: string, projectId: string) {
+        const body = {
+            "user": {
+                "userID": userId
+            },
+            "project": {
+                "projectId": projectId
+            }
+        }
+        return this.httpClient.post(`http://localhost:8080/users/assign`, body);
+    }
 }
