@@ -112,4 +112,23 @@
             {{ errorMessageAssign() }}
         </div>
     </div>
+
+    <div>
+        <h2>View Assigned Users</h2>
+        <input type="text" placeholder="Project ID" [(ngModel)]="viewProjectId">
+        <button (click)="getAssignedUsers()">Get Users</button>
+
+        <div *ngIf="assignedUsers().length > 0" class="projects-list">
+            <h3>Assigned Users ({{ assignedUsers().length }}):</h3>
+            <div *ngFor="let user of assignedUsers()" class="project-card">
+                <p><strong>User ID:</strong> {{ user.userID }}</p>
+                <p><strong>Name:</strong> {{ user.name }}</p>
+                <p><strong>Email:</strong> {{ user.email }}</p>
+                <p><strong>Role:</strong> {{ user.role }}</p>
+            </div>
+        </div>
+        <div *ngIf="assignedUsers().length === 0">
+            No users assigned to this project.
+        </div>
+    </div>
 </div>
