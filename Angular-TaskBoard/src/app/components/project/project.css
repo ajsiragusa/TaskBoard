@@ -2,7 +2,7 @@
     padding: 20px;
 }
 
-.container > div {
+.container>div {
     margin-bottom: 30px;
     padding: 15px;
     border: 1px solid #ccc;
@@ -18,7 +18,9 @@ h2 {
     margin-top: 0;
 }
 
-input, textarea, select {
+input,
+textarea,
+select {
     margin: 5px 0;
     padding: 8px;
     width: 300px;
@@ -35,4 +37,59 @@ button {
 
 button:hover {
     background-color: #0056b3;
+}
+
+.project-display {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.project-display p {
+    margin: 0.5rem 0;
+}
+
+.projects-list {
+    margin-top: 1rem;
+}
+
+.project-card {
+    background-color: white;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 1rem;
+    margin: 0.5rem 0;
+}
+
+.project-card p {
+    margin: 0.5rem 0;
+}
+
+.success-message {
+    background-color: #d4edda;
+    color: green;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    border: 1px solid #c3e6cb;
+}
+
+.error-message {
+    background-color: #f8d7da;
+    color: red;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    border: 1px solid #f5c6cb;
+}
+
+.no-data-message {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 4px;
+    color: #856404;
 }
