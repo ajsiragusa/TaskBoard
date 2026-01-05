@@ -1,7 +1,6 @@
 package com.example.TaskBoard.controller;
 
 import com.example.TaskBoard.entity.Project;
-import com.example.TaskBoard.entity.User;
 import com.example.TaskBoard.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +14,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/projects")
 @RequiredArgsConstructor
+@CrossOrigin
 public class ProjectController {
 
     private final ProjectService projectService;
@@ -39,22 +39,30 @@ public class ProjectController {
         return projectService.getProjectsByOwnerEmail(ownerEmail);
     }
 
-    // POST /projects - Create project (Admin only - security added later)
+    // POST /projects - Create project (Admin only)
     @PostMapping
-    public ResponseEntity<Project> createProject(@RequestBody Project project) {
-        Project createdProject = projectService.createProject(project);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdProject);
+    public ResponseEntity<?> createProject(@RequestBody Project project) {
+        try {
+            Project createdProject = projectService.createProject(project);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdProject);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        }
     }
 
-    // PUT /projects/{id} - Update project (Admin only - security added later)
+    // PUT /projects/{id} - Update project (Admin only)
     @PutMapping("/{id}")
-    public ResponseEntity<Project> updateProject(@PathVariable UUID id, @RequestBody Project project) {
-        project.setProjectId(id);
-        Project updatedProject = projectService.updateProject(project);
-        return ResponseEntity.ok(updatedProject);
+    public ResponseEntity<?> updateProject(@PathVariable UUID id, @RequestBody Project project) {
+        try {
+            project.setProjectId(id);
+            Project updatedProject = projectService.updateProject(project);
+            return ResponseEntity.ok(updatedProject);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        }
     }
 
-    // DELETE /projects/{id} - Delete project (Admin only - security added later)
+    // DELETE /projects/{id} - Delete project (Admin only)
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProject(@PathVariable UUID id) {
         projectService.deleteProject(id);

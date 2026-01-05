@@ -18,14 +18,6 @@ h2 {
     margin-top: 0;
 }
 
-input,
-textarea,
-select {
-    margin: 5px 0;
-    padding: 8px;
-    width: 300px;
-}
-
 button {
     padding: 10px 20px;
     background-color: #007bff;
@@ -37,18 +29,6 @@ button {
 
 button:hover {
     background-color: #0056b3;
-}
-
-.project-display {
-    background-color: #f8f9fa;
-    border: 1px solid #dee2e6;
-    border-radius: 4px;
-    padding: 1rem;
-    margin-top: 1rem;
-}
-
-.project-display p {
-    margin: 0.5rem 0;
 }
 
 .projects-list {

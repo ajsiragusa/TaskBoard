@@ -1,0 +1,25 @@
+.navbar {
+    background-color: #333;
+    padding: 10px 20px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+}
+
+.navbar a:hover {
+    background-color: #555;
+    border-radius: 4px;
+}
+
+.nav-title {
+    color: white;
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-right: 20px;
+}
