@@ -103,6 +103,12 @@ public class IssueService {
                 if(userRole.equals(User.UserRole.TESTER))
                 {
                     //update repo
+                    auditLogService.logIssueAction(
+                            issue.getIssueId().toString(),
+                            AuditLog.ActionType.DELETE,
+                            owner.getEmail(),
+                            "Updated Issue: " + issue.getTitle()
+                    );
                     return issueRepository.save(issue);
                 }
                 else {
@@ -115,6 +121,12 @@ public class IssueService {
                 if(userRole.equals(User.UserRole.DEVELOPER))
                 {
                     //update repo
+                    auditLogService.logIssueAction(
+                            issue.getIssueId().toString(),
+                            AuditLog.ActionType.DELETE,
+                            owner.getEmail(),
+                            "Updated Issue: " + issue.getTitle()
+                    );
                     return issueRepository.save(issue);
                 }
                 else {
@@ -122,6 +134,12 @@ public class IssueService {
                 }
             }
         }
+        auditLogService.logIssueAction(
+                issue.getIssueId().toString(),
+                AuditLog.ActionType.DELETE,
+                owner.getEmail(),
+                "Updated Issue: " + issue.getTitle()
+        );
         return issueRepository.save(issue);
     }
 

@@ -3,10 +3,8 @@ package com.example.TaskBoard.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -14,6 +12,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Table(name = "issues")
+@EnableJpaAuditing
 public class Issue {
 
     public enum IssueStatus {OPEN, IN_PROGRESS, RESOLVED, CLOSED};
