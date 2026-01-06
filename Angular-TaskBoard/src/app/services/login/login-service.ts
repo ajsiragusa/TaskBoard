@@ -38,7 +38,7 @@ export class LoginService {
           if(response.body){
             console.log(response.body.token)
             this.jwtStorage.setToken(response.body.token);
-            this.router.navigate(['/issue'])
+            this.router.navigate(['/dashboard'])
           }
         },
         error: err =>{

@@ -1,9 +1,10 @@
 package com.example.TaskBoard.service;
 
+import com.example.TaskBoard.entity.AuditLog;
 import com.example.TaskBoard.entity.Issue;
 import com.example.TaskBoard.entity.User;
 import com.example.TaskBoard.repository.IssueRepository;
-import com.example.TaskBoard.util.TokenUtility;
+import com.example.TaskBoard.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,19 +17,33 @@ public class IssueService {
 
     private final IssueRepository issueRepository;
     private final AuthService authService;
+    private final AuditLogService auditLogService;
+    private final UserRepository userRepository;
 
     @Autowired
-    public IssueService(IssueRepository issueRepository, AuthService authService){
+    public IssueService(IssueRepository issueRepository, AuthService authService, AuditLogService auditLogService, UserRepository userRepository){
         this.issueRepository = issueRepository;
         this.authService = authService;
+        this.auditLogService = auditLogService;
+        this.userRepository = userRepository;
     }
 
-    /*
-        TODO: update so only testers can create issues
-     */
     public Issue createIssue(Issue issue, String headerData){
         if(authService.getAuthLevel(headerData).equals(User.UserRole.TESTER)){
-            return issueRepository.save(issue);
+            User owner = userRepository.findUserByEmail(issue.getOwner().getEmail())
+                    .orElseThrow(() -> new RuntimeException("Owners not Found"));
+
+            issue.setOwner(owner);
+            Issue savedIssue = issueRepository.save(issue);
+
+            // Audit log
+            auditLogService.logIssueAction(
+                    savedIssue.getIssueId().toString(),
+                    AuditLog.ActionType.CREATE,
+                    owner.getEmail(),
+                    "Created project: " + savedIssue.getTitle()
+            );
+            return savedIssue;
         }
         else {
             return null;
@@ -36,7 +51,19 @@ public class IssueService {
     }
 
     public void deleteIssue(UUID issueId){
+        Optional<Issue> issue = issueRepository.findById(issueId);
+        String issueName = issue.map(Issue::getTitle).orElse("Unknown");
+        String ownerEmail = issue.map(i -> i.getOwner().getEmail()).orElse("Unknown");
+
         issueRepository.deleteById(issueId);
+
+        // Audit log
+        auditLogService.logIssueAction(
+                issueId.toString(),
+                AuditLog.ActionType.DELETE,
+                ownerEmail,
+                "Deleted Issue: " + issueName
+        );
     }
 
     public List<Issue> retrieveIssues(){
@@ -48,38 +75,52 @@ public class IssueService {
         return issue.orElse(null);
     }
 
-    /*
-        TODO: update so only certain users can update issues
-    */
     public Issue updateIssue(Issue issue, String headerData) {
+        // Track owner + Auth Level
         User.UserRole userRole = authService.getAuthLevel(headerData);
-        Optional<Issue> optionalIssue = issueRepository.findById(issue.getIssueId());
+        User owner = userRepository.findUserByEmail(issue.getOwner().getEmail())
+                .orElseThrow(() -> new RuntimeException("Owner not found"));
+
+        Optional<Issue> prevIssue = issueRepository.findById(issue.getIssueId());
         Issue previousIssue;
-        if(optionalIssue.isPresent()) {
-            previousIssue = optionalIssue.get();
+        if(prevIssue.isPresent())
+        {
+            previousIssue = prevIssue.get();
+            issue.setOwner(owner);
+            issue.setProjectId(previousIssue.getProjectId());
         }
         else {
-            return null;
+            throw new RuntimeException("Issue not found with ID" + issue.getIssueId());
         }
-        Issue.IssueStatus prevStatus = previousIssue.getStatus();
-        Issue.IssueStatus currStatus = issue.getStatus();
-        System.out.println("prev: " + prevStatus + "\t new: " + currStatus);
 
-        // Only developers can assign issues to in progress or resolved
-        if((issue.getStatus().equals(Issue.IssueStatus.IN_PROGRESS) && !previousIssue.getStatus().equals(Issue.IssueStatus.IN_PROGRESS))||
-                (issue.getStatus().equals(Issue.IssueStatus.RESOLVED) && !previousIssue.getStatus().equals(Issue.IssueStatus.RESOLVED))){
-            if(userRole.equals(User.UserRole.DEVELOPER)){
-                return issueRepository.save(issue);
+        // If we change the status
+        if(!previousIssue.getStatus().equals(issue.getStatus()))
+        {
+            // To Open or Closed
+            if(issue.getStatus().equals(Issue.IssueStatus.OPEN) || issue.getStatus().equals(Issue.IssueStatus.CLOSED))
+            {
+                // And we're a tester
+                if(userRole.equals(User.UserRole.TESTER))
+                {
+                    //update repo
+                    return issueRepository.save(issue);
+                }
+                else {
+                    throw new RuntimeException("Invalid Authorization");
+                }
+            } // To In progress or Resolved
+            else if(issue.getStatus() == Issue.IssueStatus.IN_PROGRESS || issue.getStatus() == Issue.IssueStatus.RESOLVED)
+            {
+                // And we're a dev
+                if(userRole.equals(User.UserRole.DEVELOPER))
+                {
+                    //update repo
+                    return issueRepository.save(issue);
+                }
+                else {
+                    throw new RuntimeException("Invalid Authorization");
+                }
             }
-            return null;
-        }
-        // Only testers can assign issues to open or closed
-        else if ((issue.getStatus().equals(Issue.IssueStatus.OPEN) && !previousIssue.getStatus().equals(Issue.IssueStatus.OPEN))
-                || (issue.getStatus().equals(Issue.IssueStatus.CLOSED) && !previousIssue.getStatus().equals(Issue.IssueStatus.CLOSED))){
-            if (userRole.equals(User.UserRole.TESTER)){
-                return issueRepository.save(issue);
-            }
-            return null;
         }
         return issueRepository.save(issue);
     }
