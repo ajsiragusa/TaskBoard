@@ -43,7 +43,7 @@ public class UserService {
     }
 
     // POST /users/register - Creates a new user account
-    public User createNewUser(User userInfo) throws SQLException, IllegalArgumentException{
+    public Token createNewUser(User userInfo) throws SQLException, IllegalArgumentException{
         // Querying the database may be slow, so check that the provided info is correct first
         validateUserInfo(userInfo);
 
@@ -58,7 +58,9 @@ public class UserService {
             throw new SQLException("A user associated with the email " + userInfo.getEmail() + " already exist!");
         }
 
-        return userRepo.save(userInfo);
+        User createdUser = userRepo.save(userInfo);
+
+        return new Token(tokenUtility.generateLoginToken(createdUser.getUserID(), createdUser.getRole()));
     }
 
     /*

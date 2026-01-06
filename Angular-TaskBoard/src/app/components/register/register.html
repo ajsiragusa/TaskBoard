@@ -1,0 +1,30 @@
+<div class="container">
+  <div>
+    <h1>Register</h1>
+    <div>
+      <h2>Name</h2>
+      <input type="text" placeholder="First Last" [(ngModel)]="name"/>
+
+      <h2>Email</h2>
+      <input type="text" placeholder="Email" [(ngModel)]="email"/>
+
+      <h2>Password</h2>
+      <input type="password" placeholder="Password" [(ngModel)]="password"/>
+
+      <h2>Role</h2>
+      <select [(ngModel)]="userRole">
+        @for(role of ROLE_TYPES; track $index){
+          <option [ngValue]="role">{{ role }}</option>
+        }
+      </select>
+    </div>
+
+
+    <br><br>
+    <button (click)="attemptRegistration()">Register</button>
+
+  </div>
+
+</div>
+
+
