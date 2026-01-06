@@ -31,7 +31,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> registerUser(@RequestBody User userInfo){
+    public ResponseEntity<Token> registerUser(@RequestBody User userInfo){
 
         try {
             return ResponseEntity.status(HttpStatus.OK).body(userService.createNewUser(userInfo));
