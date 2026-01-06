@@ -15,5 +15,7 @@
             <p><strong>Time Created:</strong> {{issueData()?.timeCreatedAtEpoch}}</p>
             <p><strong>Time Updated:</strong> {{issueData()?.timeUpdatedAtEpoch}}</p>
         </div>
+
+        <app-comments [issueId]="issueData()?.issueId ?? ''"></app-comments>
     }
 </div>

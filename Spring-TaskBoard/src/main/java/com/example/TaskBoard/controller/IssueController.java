@@ -1,5 +1,6 @@
 package com.example.TaskBoard.controller;
 
+import com.example.TaskBoard.entity.AuditLog;
 import com.example.TaskBoard.entity.Issue;
 import com.example.TaskBoard.service.IssueService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,5 +75,40 @@ public class IssueController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
         return ResponseEntity.status(HttpStatus.OK).body(updatedIssue);
+    }
+
+    @GetMapping("/projects/{projectId}/issues")
+    public ResponseEntity<List<Issue>> getIssuesByProject(@PathVariable String projectId) {
+        UUID projectUUID = UUID.fromString(projectId);
+        List<Issue> issues = issueService.getIssuesByProject(projectUUID);
+        return ResponseEntity.ok(issues);
+    }
+
+    @GetMapping("/issues/search")
+    public ResponseEntity<List<Issue>> searchIssues(@RequestParam String keyword) {
+        List<Issue> issues = issueService.searchIssues(keyword);
+        return ResponseEntity.ok(issues);
+    }
+
+    @GetMapping("/issues/filter")
+    public ResponseEntity<List<Issue>> filterIssues(
+            @RequestParam(required = false) String projectId,
+            @RequestParam(required = false) Issue.IssueStatus status,
+            @RequestParam(required = false) Issue.IssueSeverity severity,
+            @RequestParam(required = false) Issue.IssuePriority priority,
+            @RequestParam(required = false) String keyword) {
+        UUID projectUUID = projectId != null ? UUID.fromString(projectId) : null;
+        List<Issue> issues = issueService.filterIssues(projectUUID, status, severity, priority, keyword);
+        return ResponseEntity.ok(issues);
+    }
+
+    @GetMapping("/issues/{issueId}/history")
+    public ResponseEntity<List<AuditLog>> getIssueHistory(@PathVariable String issueId) {
+        UUID issueUUID = UUID.fromString(issueId);
+        if (issueService.findByIssueId(issueUUID) == null) {
+            return ResponseEntity.notFound().build();
+        }
+        List<AuditLog> history = issueService.getIssueHistory(issueUUID);
+        return ResponseEntity.ok(history);
     }
 }

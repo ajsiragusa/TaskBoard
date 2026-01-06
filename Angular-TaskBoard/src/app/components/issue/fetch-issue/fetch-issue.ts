@@ -2,10 +2,11 @@ import { Component, signal, WritableSignal } from '@angular/core';
 import { IssueService } from '../../../services/issue-service';
 import { FormsModule } from '@angular/forms';
 import { IssueData } from '../../../interfaces/issue-data';
+import { Comments } from '../../comments/comments';
 
 @Component({
   selector: 'app-fetch-issue',
-  imports: [FormsModule],
+  imports: [FormsModule, Comments],
   templateUrl: './fetch-issue.html',
   styleUrl: './fetch-issue.css',
 })
