@@ -11,5 +11,8 @@ import java.util.Optional;
 @Repository
 public interface CommentsRepository extends JpaRepository<Comments, Long> {
     List<Comments> findAllByIssue(Optional<Issue> issue);
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 }

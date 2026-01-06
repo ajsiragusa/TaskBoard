@@ -1,9 +1,14 @@
 package com.example.TaskBoard.entity;
 
+<<<<<<< Updated upstream
+=======
+import com.fasterxml.jackson.annotation.JsonFormat;
+>>>>>>> Stashed changes
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+<<<<<<< Updated upstream
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -15,12 +20,27 @@ public class Comments{
     @Id
     @Column(name = "comment_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
+=======
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalTime;
+
+@Entity
+@NoArgsConstructor
+@Data
+@Table(name = "comments")
+public class Comments implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "comment_id", nullable = false)
+>>>>>>> Stashed changes
     private Long commentId;
 
     @Column(nullable = false)
     private String comment;
 
     @Column(name = "creation_date", nullable = false)
+<<<<<<< Updated upstream
     private LocalDate date;
 
     @Column(name = "creation_time", nullable = false)
@@ -32,6 +52,21 @@ public class Comments{
 
     @ManyToOne
     @JoinColumn(name = "issue_id", nullable = false)
+=======
+//    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate date;
+
+    @Column(name = "creation_time", nullable = false)
+//    @JsonFormat(pattern = "HH:mm:ss")
+    private LocalTime time;
+
+    @OneToOne
+    @JoinColumn(name = "creator_name", nullable = true)
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "issue_id", nullable = true)
+>>>>>>> Stashed changes
     private Issue issue;
 
     public Comments(Long commentId, String comment, LocalDate date, LocalTime time, User user, Issue issue) {
