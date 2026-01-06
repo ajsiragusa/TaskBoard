@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { ProjectData } from "../interfaces/project-data";
+import { UserData } from "../interfaces/user-data";
 
 @Injectable({
     providedIn: 'root'
@@ -56,5 +57,9 @@ export class ProjectService {
             }
         }
         return this.httpClient.post(`http://localhost:8080/users/assign`, body);
+    }
+
+    getAssignedUsers(projectId: string) {
+        return this.httpClient.get<UserData[]>(`http://localhost:8080/users/project/${projectId}`);
     }
 }

@@ -106,4 +106,12 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userAssignment);
     }
 
+    @GetMapping("/project/{projectId}")
+    public ResponseEntity<List<User>> getUsersByProject(@PathVariable String projectId){
+        Project project = new Project();
+        project.setProjectId(java.util.UUID.fromString(projectId));
+        List<User> users = projectUserService.getAllProjectAssignedUsers(project);
+        return ResponseEntity.status(HttpStatus.OK).body(users);
+    }
+
 }

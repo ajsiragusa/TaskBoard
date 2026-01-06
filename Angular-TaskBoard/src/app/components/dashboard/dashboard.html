@@ -20,6 +20,16 @@
                 <p><strong>Name:</strong> {{ project.name }}</p>
                 <p><strong>Description:</strong> {{ project.description || 'No description' }}</p>
                 <p><strong>Owner:</strong> {{ project.owner.email }}</p>
+                <p><strong>Assigned To:</strong>
+                    <span *ngIf="assignedUsersMap()[project.projectId] && assignedUsersMap()[project.projectId].length > 0">
+                        <span *ngFor="let user of assignedUsersMap()[project.projectId]; let last = last">
+                            {{ user.name }} ({{ user.role }})<span *ngIf="!last">, </span>
+                        </span>
+                    </span>
+                    <span *ngIf="!assignedUsersMap()[project.projectId] || assignedUsersMap()[project.projectId].length === 0">
+                        No users assigned
+                    </span>
+                </p>
             </div>
         </div>
 

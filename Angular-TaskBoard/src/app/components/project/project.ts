@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ProjectSubscriber } from '../../classes/project-subscriber';
 import { CommonModule } from '@angular/common';
 import { ProjectData } from '../../interfaces/project-data';
+import { UserData } from '../../interfaces/user-data';
 
 @Component({
   selector: 'app-project',
@@ -37,11 +38,13 @@ export class Project extends ProjectSubscriber {
 
   ownerEmailSearch: string = '';
 
-  // Assign user to project
   assignUserId: string = '';
   assignProjectId: string = '';
   successMessageAssign: WritableSignal<string> = signal('');
   errorMessageAssign: WritableSignal<string> = signal('');
+
+  viewProjectId: string = '';
+  assignedUsers: WritableSignal<UserData[]> = signal([]);
 
   getProjects() {
     this.projectService.getProjects().subscribe({
@@ -116,9 +119,6 @@ export class Project extends ProjectSubscriber {
   }
 
   assignUserToProject() {
-    this.errorMessageAssign.set('');
-    this.successMessageAssign.set('');
-
     if (this.assignUserId.trim() === '' || this.assignProjectId.trim() === '') {
       this.errorMessageAssign.set('Both User ID and Project ID are required');
       return;
@@ -131,6 +131,21 @@ export class Project extends ProjectSubscriber {
       },
       error: (err) => {
         this.errorMessageAssign.set('Failed to assign user to project');
+        console.error(err);
+      }
+    });
+  }
+
+  getAssignedUsers() {
+    if (this.viewProjectId.trim() === '') {
+      return;
+    }
+    this.projectService.getAssignedUsers(this.viewProjectId).subscribe({
+      next: (responseData) => {
+        this.assignedUsers.set(responseData);
+        console.log(responseData);
+      },
+      error: (err) => {
         console.error(err);
       }
     });
