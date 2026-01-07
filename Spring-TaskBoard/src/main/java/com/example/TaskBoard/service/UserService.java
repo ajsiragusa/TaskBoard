@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +41,11 @@ public class UserService {
     // GET /users - Gets all user in the database
     public List<User> getAllUsers(){
         return userRepo.findAll();
+    }
+
+    // GET /users/me - Gets user by ID (from JWT)
+    public Optional<User> getUserById(UUID userId){
+        return userRepo.findById(userId);
     }
 
     // POST /users/register - Creates a new user account

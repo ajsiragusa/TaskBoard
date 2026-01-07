@@ -59,6 +59,18 @@ export class ProjectService {
         return this.httpClient.post(`http://localhost:8080/users/assign`, body);
     }
 
+    unassignUserFromProject(userId: string, projectId: string) {
+        const body = {
+            "user": {
+                "userID": userId
+            },
+            "project": {
+                "projectId": projectId
+            }
+        }
+        return this.httpClient.delete(`http://localhost:8080/users/unassign`, { body });
+    }
+
     getAssignedUsers(projectId: string) {
         return this.httpClient.get<UserData[]>(`http://localhost:8080/users/project/${projectId}`);
     }

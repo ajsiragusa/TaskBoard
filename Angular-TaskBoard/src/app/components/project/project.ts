@@ -43,6 +43,11 @@ export class Project extends ProjectSubscriber {
   successMessageAssign: WritableSignal<string> = signal('');
   errorMessageAssign: WritableSignal<string> = signal('');
 
+  unassignUserId: string = '';
+  unassignProjectId: string = '';
+  successMessageUnassign: WritableSignal<string> = signal('');
+  errorMessageUnassign: WritableSignal<string> = signal('');
+
   viewProjectId: string = '';
   assignedUsers: WritableSignal<UserData[]> = signal([]);
 
@@ -146,6 +151,26 @@ export class Project extends ProjectSubscriber {
         console.log(responseData);
       },
       error: (err) => {
+        console.error(err);
+      }
+    });
+  }
+
+  unassignUserFromProject() {
+    if (this.unassignUserId.trim() === '' || this.unassignProjectId.trim() === '') {
+      this.errorMessageUnassign.set('Both User ID and Project ID are required');
+      return;
+    }
+
+    this.projectService.unassignUserFromProject(this.unassignUserId, this.unassignProjectId).subscribe({
+      next: () => {
+        this.successMessageUnassign.set(`User ${this.unassignUserId} removed from Project ${this.unassignProjectId}`);
+        this.errorMessageUnassign.set('');
+        console.log('User unassigned successfully');
+      },
+      error: (err) => {
+        this.errorMessageUnassign.set('Failed to remove user from project');
+        this.successMessageUnassign.set('');
         console.error(err);
       }
     });

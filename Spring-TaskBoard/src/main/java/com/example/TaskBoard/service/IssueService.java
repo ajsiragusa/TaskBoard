@@ -75,6 +75,24 @@ public class IssueService {
         return issue.orElse(null);
     }
 
+    public List<Issue> getIssuesByProject(UUID projectId) {
+        return issueRepository.findByProjectId(projectId);
+    }
+
+    public List<Issue> searchIssues(String keyword) {
+        return issueRepository.searchByKeyword(keyword);
+    }
+
+    public List<Issue> filterIssues(UUID projectId, Issue.IssueStatus status,
+                                     Issue.IssueSeverity severity, Issue.IssuePriority priority,
+                                     String keyword) {
+        return issueRepository.findByFilters(projectId, status, severity, priority, keyword);
+    }
+
+    public List<AuditLog> getIssueHistory(UUID issueId) {
+        return auditLogService.getAuditLogsForEntity(AuditLog.EntityType.ISSUE, issueId.toString());
+    }
+
     public Issue updateIssue(Issue issue, String headerData) {
         // Track owner + Auth Level
         User.UserRole userRole = authService.getAuthLevel(headerData);
@@ -100,14 +118,14 @@ public class IssueService {
             if(issue.getStatus().equals(Issue.IssueStatus.OPEN) || issue.getStatus().equals(Issue.IssueStatus.CLOSED))
             {
                 // And we're a tester
-                if(userRole.equals(User.UserRole.TESTER))
+            if(userRole.equals(User.UserRole.TESTER))
                 {
                     //update repo
                     auditLogService.logIssueAction(
                             issue.getIssueId().toString(),
-                            AuditLog.ActionType.DELETE,
+                            AuditLog.ActionType.UPDATE,
                             owner.getEmail(),
-                            "Updated Issue: " + issue.getTitle()
+                            "Status changed from " + previousIssue.getStatus() + " to " + issue.getStatus()
                     );
                     return issueRepository.save(issue);
                 }
@@ -123,9 +141,9 @@ public class IssueService {
                     //update repo
                     auditLogService.logIssueAction(
                             issue.getIssueId().toString(),
-                            AuditLog.ActionType.DELETE,
+                            AuditLog.ActionType.UPDATE,
                             owner.getEmail(),
-                            "Updated Issue: " + issue.getTitle()
+                            "Status changed from " + previousIssue.getStatus() + " to " + issue.getStatus()
                     );
                     return issueRepository.save(issue);
                 }
@@ -136,7 +154,7 @@ public class IssueService {
         }
         auditLogService.logIssueAction(
                 issue.getIssueId().toString(),
-                AuditLog.ActionType.DELETE,
+                AuditLog.ActionType.UPDATE,
                 owner.getEmail(),
                 "Updated Issue: " + issue.getTitle()
         );
